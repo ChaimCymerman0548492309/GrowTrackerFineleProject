@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  grow_tracker-app:
+    build:
+      context: .
+      dockerfile: ./nest-js_redis_jwt_pg_grphql/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis-stack
+
+  redis-stack:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    command: ["redis-server", "--port", "6379", "--protected-mode", "no"]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./vite-project/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - grow_tracker-app  # Updated to match the service name
